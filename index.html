@@ -683,9 +683,10 @@
       return;
     }
     const total = BASE + (spouseIncluded ? SPOUSE : 0);
-    const note = encodeURIComponent("TENTH – A DECADE");
+    const note = encodeURIComponent("TENTH - A DECADE"); // plain ASCII hyphen, not an en-dash
     const payeeName = encodeURIComponent(PAYEE_NAME);
-    const upiLink = `upi://pay?pa=${UPI_ID}&pn=${payeeName}&am=${total}&cu=INR&tn=${note}`;
+    const payeeVpa = encodeURIComponent(UPI_ID);
+    const upiLink = `upi://pay?pa=${payeeVpa}&pn=${payeeName}&am=${total.toFixed(2)}&cu=INR&tn=${note}`;
     window.location.href = upiLink;
     paymentInitiated = true;
 
