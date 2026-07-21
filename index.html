@@ -64,12 +64,26 @@
     pointer-events:none;
   }
   .phoenix-mark{
-    position:relative;
-    width:96px; height:96px;
-    margin-bottom:22px;
-    opacity:0.95;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 18px;
   }
-  .phoenix-mark svg{ width:100%; height:100%; filter: drop-shadow(0 0 18px rgba(203,161,53,0.35)); }
+  
+  .phoenix-mark img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;              /* Remove if you don't want a circular logo */
+      padding: 6px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(203,161,53,0.35);
+      box-shadow: 0 0 18px rgba(203,161,53,0.25);
+      filter: drop-shadow(0 0 12px rgba(203,161,53,0.35));
+  }
 
   .ember{
     position:absolute;
@@ -376,9 +390,10 @@
 
 <!-- ================= HERO ================= -->
 <section class="hero">
-  <div class="phoenix-mark">
-    <img src="./tenthadecade.jpeg" alt="Tenth-a-Decade Logo">
-  </div>
+  <div class="hero-logo">
+      <img src="./tenthadecade.jpeg" alt="Tenth-a-Decade Logo">
+  </div>  
+
 
   <p class="eyebrow">A.R.C. Matriculation Hr. Sec. School</p>
   <h1 class="hero-title">TENTH<br><em>— A Decade —</em></h1>
