@@ -63,6 +63,7 @@
       radial-gradient(ellipse 60% 40% at 50% 100%, rgba(180,67,42,0.10), transparent 60%);
     pointer-events:none;
   }
+  .hero-logo,
   .phoenix-mark{
     position: relative;
     display: flex;
@@ -71,8 +72,10 @@
     width: 90px;
     height: 90px;
     margin: 0 auto 18px;
+    z-index:1;
   }
-  
+
+  .hero-logo img,
   .phoenix-mark img{
       width: 100%;
       height: 100%;
@@ -193,6 +196,72 @@
     color:var(--ivory-dim);
   }
   .venue-strip span{ color:var(--gold-light); }
+  .venue-strip a.location-link{
+    color:var(--gold-light);
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  /* ---------------- MAP PREVIEW ---------------- */
+  .map-card{
+    background:linear-gradient(180deg, rgba(27,27,31,0.9), rgba(20,20,23,0.9));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .map-frame-wrap{
+    position:relative;
+    width:100%;
+    padding-top:56%; /* aspect ratio */
+    background:#0F0F12;
+  }
+  .map-frame-wrap iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    filter:grayscale(0.15) contrast(1.05);
+  }
+  .map-meta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 18px;
+    flex-wrap:wrap;
+  }
+  .map-meta .addr{
+    font-size:13.5px;
+    color:var(--ivory-dim);
+    line-height:1.5;
+  }
+  .map-meta .addr strong{
+    display:block;
+    color:var(--ivory);
+    font-family:'Cormorant Garamond', serif;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:2px;
+  }
+  .map-directions{
+    flex-shrink:0;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(203,161,53,0.14);
+    border:1px solid var(--gold);
+    color:var(--gold-light);
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    padding:10px 16px;
+    border-radius:100px;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:transform .2s ease;
+  }
+  .map-directions:active{ transform:scale(0.96); }
 
   /* ---------------- SECTION SHARED ---------------- */
   section{ padding:70px 20px; position:relative; }
@@ -425,6 +494,39 @@
       Nithilam Mahal, Karumathampatti
     </a>
   </div>
+  </div>
+</section>
+
+<!-- ================= VENUE / MAP ================= -->
+<section id="venue">
+  <div class="section-inner">
+    <div class="section-head">
+      <p class="eyebrow">Venue</p>
+      <h2>Find Us There</h2>
+      <p>Tap the map for turn-by-turn directions.</p>
+    </div>
+
+    <div class="map-card">
+      <a href="https://maps.app.goo.gl/WjRJU4dze1deRGsG7" target="_blank" rel="noopener noreferrer">
+        <div class="map-frame-wrap">
+          <iframe
+            src="https://www.google.com/maps?q=Nithilam+Mahal,+Karumathampatti,+Coimbatore&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </a>
+      <div class="map-meta">
+        <div class="addr">
+          <strong>Nithilam Mahal</strong>
+          Karumathampatti, Coimbatore
+        </div>
+        <a class="map-directions" href="https://maps.app.goo.gl/WjRJU4dze1deRGsG7" target="_blank" rel="noopener noreferrer">
+          Get Directions →
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
