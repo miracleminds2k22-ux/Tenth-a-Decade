@@ -284,11 +284,16 @@
     padding:22px 16px;
     text-align:center;
     cursor:pointer;
-    transition:border-color .2s ease;
+    transition:border-color .2s ease, opacity .2s ease;
   }
   .upload-box:hover{ border-color:var(--gold); }
   .upload-box p{ font-size:13px; color:var(--ivory-dim); margin-top:6px;}
   .upload-box.has-file{ border-color:var(--gold); }
+  .upload-box.locked{
+    cursor:not-allowed;
+    opacity:0.45;
+  }
+  .upload-box.locked:hover{ border-color:var(--line); }
   #screenshotPreview{ max-width:100%; border-radius:10px; margin-top:12px; display:none; }
 
   .pay-btn{
@@ -320,6 +325,7 @@
     font-weight:500;
     cursor:pointer;
   }
+  .confirm-btn:disabled{ opacity:0.4; cursor:not-allowed; }
 
   .helper-text{ font-size:11.5px; color:var(--ivory-dim); text-align:center; margin-top:12px; line-height:1.5; }
 
@@ -437,20 +443,26 @@
         <div class="amount-row total"><span>Total Payable</span><span class="val" id="totalAmt">₹899</span></div>
       </div>
 
+      <button class="pay-btn" id="payBtn" onclick="payNow()">Pay Now — ₹899</button>
+
       <div class="field" style="margin-top:20px;">
+        <label>Transaction / UPI Reference ID</label>
+        <input type="text" id="utrId" placeholder="12-digit UTR shown after payment" maxlength="30" disabled>
+      </div>
+
+      <div class="field">
         <label>Payment Screenshot</label>
-        <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()">
-          <div id="uploadIcon">📤</div>
-          <p id="uploadText">Tap to upload after payment</p>
+        <div class="upload-box locked" id="uploadBox" onclick="handleUploadBoxClick()">
+          <div id="uploadIcon">🔒</div>
+          <p id="uploadText">Complete payment above to unlock upload</p>
           <img id="screenshotPreview">
         </div>
         <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFile(event)">
       </div>
 
-      <button class="pay-btn" id="payBtn" onclick="payNow()">Pay Now — ₹899</button>
       <button class="confirm-btn" id="confirmBtn" onclick="confirmRegistration()" disabled>Confirm Registration</button>
 
-      <p class="helper-text">Tapping "Pay Now" opens your UPI app (GPay / PhonePe / Paytm / BHIM) with the exact amount and note pre-filled. Complete the payment, then upload the screenshot and confirm.</p>
+      <p class="helper-text">Tapping "Pay Now" opens your UPI app (GPay / PhonePe / Paytm / BHIM) with the exact amount and note pre-filled. Complete the payment, then enter your UTR/reference ID, upload the screenshot, and confirm. <strong>Note: this page cannot automatically verify your payment</strong> — the organizers will cross-check your screenshot and reference ID manually before the event.</p>
     </div>
   </div>
 </section>
@@ -460,7 +472,7 @@
   <div class="confirm-screen" id="confirmScreen">
     <div class="check-mark">✓</div>
     <h2>Registration Successful</h2>
-    <p class="msg">Thank you, <span id="confName">Friend</span>. Your spot is reserved.</p>
+    <p class="msg">Thank you, <span id="confName">Friend</span>. Your spot is reserved pending payment verification.</p>
     <div class="confirm-detail">
       See you on 9 August 2026<br>at<br>Nithilam Mahal ❤️
     </div>
@@ -474,9 +486,6 @@
 
 <script>
   /* ---------- Embers ---------- */
-  const emberField = document.getElementById('emberField');
-  for(let i=0;i<0;i++){} // reserved
-
   function spawnEmbers(){
     const hero = document.querySelector('.hero');
     for(let i=0;i<18;i++){
@@ -530,7 +539,12 @@
   const UPI_ID = "sathieshkathirvel@oksbi";
   const PAYEE_NAME = "TENTH A DECADE";
 
+  // Google Apps Script Web App URL that saves registrations to the Sheet.
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwi-TI6xLNuJ3Sn9A6_Z1d3ymnQA5BFe5lSwvxssVaKon2wfahWb1aRT_-dx2NTRDVY/exec';
+
   let paymentInitiated = false;
+  let fileUploaded = false;
+  let screenshotDataUrl = '';
 
   function payNow(){
     const name = document.getElementById('fullName').value.trim();
@@ -545,11 +559,35 @@
     const upiLink = `upi://pay?pa=${UPI_ID}&pn=${payeeName}&am=${total}&cu=INR&tn=${note}`;
     window.location.href = upiLink;
     paymentInitiated = true;
-    document.getElementById('confirmBtn').disabled = false;
+
+    // Unlock the UTR field and the screenshot upload box only now
+    const utrField = document.getElementById('utrId');
+    utrField.disabled = false;
+
+    const box = document.getElementById('uploadBox');
+    box.classList.remove('locked');
+    document.getElementById('uploadIcon').textContent = '📤';
+    document.getElementById('uploadText').textContent = 'Tap to upload your payment screenshot';
+
+    updateConfirmButtonState();
+  }
+
+  function handleUploadBoxClick(){
+    if(!paymentInitiated){
+      alert('Please complete the payment first — tap "Pay Now" above.');
+      return;
+    }
+    document.getElementById('fileInput').click();
   }
 
   /* ---------- Screenshot Upload ---------- */
   function handleFile(evt){
+    if(!paymentInitiated){
+      // Safety net in case the hidden input is triggered some other way
+      evt.target.value = '';
+      alert('Please complete the payment first.');
+      return;
+    }
     const file = evt.target.files[0];
     if(!file) return;
     const reader = new FileReader();
@@ -560,18 +598,64 @@
       document.getElementById('uploadIcon').textContent = '✅';
       document.getElementById('uploadText').textContent = 'Screenshot attached — tap to change';
       document.getElementById('uploadBox').classList.add('has-file');
+      fileUploaded = true;
+      screenshotDataUrl = e.target.result;
+      updateConfirmButtonState();
     }
     reader.readAsDataURL(file);
   }
 
+  /* ---------- Confirm button gating ---------- */
+  // Confirm is only enabled once: payment was initiated, a UTR/reference id is
+  // entered, AND a screenshot has been attached. This is still self-reported —
+  // see the note in the chat about why real verification needs a backend.
+  function updateConfirmButtonState(){
+    const utr = document.getElementById('utrId').value.trim();
+    const ready = paymentInitiated && fileUploaded && utr.length >= 4;
+    document.getElementById('confirmBtn').disabled = !ready;
+  }
+  document.getElementById('utrId').addEventListener('input', updateConfirmButtonState);
+
   /* ---------- Confirm ---------- */
-  function confirmRegistration(){
+  async function confirmRegistration(){
     const name = document.getElementById('fullName').value.trim() || 'Friend';
-    document.getElementById('confName').textContent = name;
-    document.getElementById('formCard').style.display = 'none';
-    document.querySelector('#register .section-head').style.display = 'none';
-    document.getElementById('confirmScreen').classList.add('show');
-    window.scrollTo({top: document.getElementById('confirmScreen').offsetTop - 40, behavior:'smooth'});
+    const mobile = document.getElementById('mobile').value.trim();
+    const utr = document.getElementById('utrId').value.trim();
+    const total = BASE + (spouseIncluded ? SPOUSE : 0);
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    confirmBtn.disabled = true;
+    const originalLabel = confirmBtn.textContent;
+    confirmBtn.textContent = 'Submitting…';
+
+    try{
+      // Apps Script doesn't send CORS headers back for simple deployments,
+      // so we use no-cors: the request still reaches the sheet, we just
+      // can't read the response body. Errors here are network/DNS failures.
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          name: name,
+          mobile: mobile,
+          spouse: spouseIncluded,
+          total: total,
+          utr: utr,
+          screenshotBase64: screenshotDataUrl
+        })
+      });
+
+      document.getElementById('confName').textContent = name;
+      document.getElementById('formCard').style.display = 'none';
+      document.querySelector('#register .section-head').style.display = 'none';
+      document.getElementById('confirmScreen').classList.add('show');
+      window.scrollTo({top: document.getElementById('confirmScreen').offsetTop - 40, behavior:'smooth'});
+    } catch(err){
+      alert('Something went wrong submitting your registration. Please check your internet connection and try again.');
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = originalLabel;
+    }
   }
 </script>
 
