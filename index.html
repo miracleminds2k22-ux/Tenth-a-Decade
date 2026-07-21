@@ -683,12 +683,14 @@
       return;
     }
     const total = BASE + (spouseIncluded ? SPOUSE : 0);
-    const note = encodeURIComponent("TENTH - A DECADE"); // plain ASCII hyphen, not an en-dash
+    const note = encodeURIComponent("TENTH A DECADE");
     const payeeName = encodeURIComponent(PAYEE_NAME);
-    const payeeVpa = encodeURIComponent(UPI_ID);
-    const upiLink = `upi://pay?pa=${payeeVpa}&pn=${payeeName}&am=${total.toFixed(2)}&cu=INR&tn=${note}`;
+    const txnRef = "TAD" + Date.now();
+    const upiLink = upi://pay?pa=${UPI_ID}&pn=${payeeName}&am=${total.toFixed(2)}&cu=INR&tn=${note}&tr=${txnRef};
     window.location.href = upiLink;
     paymentInitiated = true;
+    document.getElementById('confirmBtn').disabled = false;
+    }
 
     // Unlock the UTR field and the screenshot upload box only now
     const utrField = document.getElementById('utrId');
