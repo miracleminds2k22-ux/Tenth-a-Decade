@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
     --ink:#0A0A0C;
@@ -80,7 +81,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      border-radius: 50%;              /* Remove if you don't want a circular logo */
+      border-radius: 50%;
       padding: 6px;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(203,161,53,0.35);
@@ -212,7 +213,7 @@
   .map-frame-wrap{
     position:relative;
     width:100%;
-    padding-top:56%; /* aspect ratio */
+    padding-top:56%;
     background:#0F0F12;
   }
   .map-frame-wrap iframe{
@@ -309,6 +310,7 @@
   }
   .field input:focus{ border-color:var(--gold); }
   .field input::placeholder{ color:rgba(244,240,230,0.3); }
+  .field input:disabled{ opacity:0.4; }
 
   .toggle-row{
     display:flex;
@@ -359,6 +361,22 @@
     font-family:'IBM Plex Mono', monospace;
     color:var(--gold-light);
     font-size:19px;
+  }
+
+  .qr-wrap{
+    text-align:center;
+    margin-top:16px;
+  }
+  .qr-wrap p{
+    font-size:12px;
+    color:var(--ivory-dim);
+    margin-bottom:10px;
+  }
+  #qrCode{
+    display:inline-block;
+    background:#fff;
+    padding:10px;
+    border-radius:12px;
   }
 
   .upload-box{
@@ -468,8 +486,7 @@
 <section class="hero">
   <div class="hero-logo">
       <img src="./tenthadecade.jpeg" alt="Tenth-a-Decade Logo">
-  </div>  
-
+  </div>
 
   <p class="eyebrow">A.R.C. Matriculation Hr. Sec. School</p>
   <h1 class="hero-title">TENTH<br><em>— A Decade —</em></h1>
@@ -573,6 +590,11 @@
 
       <button class="pay-btn" id="payBtn" onclick="payNow()">Pay Now — ₹899</button>
 
+      <div class="qr-wrap">
+        <p>Or scan to pay — updates automatically with your total</p>
+        <div id="qrCode"></div>
+      </div>
+
       <div class="field" style="margin-top:20px;">
         <label>Transaction / UPI Reference ID</label>
         <input type="text" id="utrId" placeholder="12-digit UTR shown after payment" maxlength="30" disabled>
@@ -590,7 +612,7 @@
 
       <button class="confirm-btn" id="confirmBtn" onclick="confirmRegistration()" disabled>Confirm Registration</button>
 
-      <p class="helper-text">Tapping "Pay Now" opens your UPI app (GPay / PhonePe / Paytm / BHIM) with the exact amount and note pre-filled. Complete the payment, then enter your UTR/reference ID, upload the screenshot, and confirm. <strong>Note: this page cannot automatically verify your payment</strong> — the organizers will cross-check your screenshot and reference ID manually before the event.</p>
+      <p class="helper-text">Tapping "Pay Now" (or scanning the QR) opens your UPI app with the exact amount and note pre-filled. Complete the payment, then enter your UTR/reference ID, upload the screenshot, and confirm. <strong>Note: this page cannot automatically verify your payment</strong> — the organizers will cross-check your screenshot and reference ID manually before the event.</p>
     </div>
   </div>
 </section>
@@ -661,133 +683,7 @@
     const total = BASE + (val ? SPOUSE : 0);
     document.getElementById('totalAmt').textContent = '₹'+total;
     document.getElementById('payBtn').textContent = 'Pay Now — ₹'+total;
+    generateQR(total);
   }
 
-  /* ---------- UPI Payment ---------- */
-  // ⚠️ Replace this with your real UPI ID before publishing
-  const UPI_ID = "sathieshkathirvel@oksbi";
-  const PAYEE_NAME = "TENTHADECADE";
-
-  // Google Apps Script Web App URL that saves registrations to the Sheet.
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwi-TI6xLNuJ3Sn9A6_Z1d3ymnQA5BFe5lSwvxssVaKon2wfahWb1aRT_-dx2NTRDVY/exec';
-
-  let paymentInitiated = false;
-  let fileUploaded = false;
-  let screenshotDataUrl = '';
-
-  function payNow(){
-    const name = document.getElementById('fullName').value.trim();
-    const mobile = document.getElementById('mobile').value.trim();
-    if(!name || mobile.length < 10){
-      alert('Please enter your full name and a valid 10-digit mobile number first.');
-      return;
-    }
-    const total = BASE + (spouseIncluded ? SPOUSE : 0);
-    const note = encodeURIComponent("TENTH - A DECADE"); // plain ASCII hyphen, not an en-dash
-    const payeeName = encodeURIComponent(PAYEE_NAME);
-    const payeeVpa = encodeURIComponent(UPI_ID);
-    const upiLink = `upi://pay?pa=${payeeVpa}&pn=${payeeName}&am=${total.toFixed(2)}&cu=INR&tn=${note}`;
-    window.location.href = upiLink;
-    paymentInitiated = true;
-
-    // Unlock the UTR field and the screenshot upload box only now
-    const utrField = document.getElementById('utrId');
-    utrField.disabled = false;
-
-    const box = document.getElementById('uploadBox');
-    box.classList.remove('locked');
-    document.getElementById('uploadIcon').textContent = '📤';
-    document.getElementById('uploadText').textContent = 'Tap to upload your payment screenshot';
-
-    updateConfirmButtonState();
-  }
-
-  function handleUploadBoxClick(){
-    if(!paymentInitiated){
-      alert('Please complete the payment first — tap "Pay Now" above.');
-      return;
-    }
-    document.getElementById('fileInput').click();
-  }
-
-  /* ---------- Screenshot Upload ---------- */
-  function handleFile(evt){
-    if(!paymentInitiated){
-      // Safety net in case the hidden input is triggered some other way
-      evt.target.value = '';
-      alert('Please complete the payment first.');
-      return;
-    }
-    const file = evt.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e){
-      const preview = document.getElementById('screenshotPreview');
-      preview.src = e.target.result;
-      preview.style.display = 'block';
-      document.getElementById('uploadIcon').textContent = '✅';
-      document.getElementById('uploadText').textContent = 'Screenshot attached — tap to change';
-      document.getElementById('uploadBox').classList.add('has-file');
-      fileUploaded = true;
-      screenshotDataUrl = e.target.result;
-      updateConfirmButtonState();
-    }
-    reader.readAsDataURL(file);
-  }
-
-  /* ---------- Confirm button gating ---------- */
-  // Confirm is only enabled once: payment was initiated, a UTR/reference id is
-  // entered, AND a screenshot has been attached. This is still self-reported —
-  // see the note in the chat about why real verification needs a backend.
-  function updateConfirmButtonState(){
-    const utr = document.getElementById('utrId').value.trim();
-    const ready = paymentInitiated && fileUploaded && utr.length >= 4;
-    document.getElementById('confirmBtn').disabled = !ready;
-  }
-  document.getElementById('utrId').addEventListener('input', updateConfirmButtonState);
-
-  /* ---------- Confirm ---------- */
-  async function confirmRegistration(){
-    const name = document.getElementById('fullName').value.trim() || 'Friend';
-    const mobile = document.getElementById('mobile').value.trim();
-    const utr = document.getElementById('utrId').value.trim();
-    const total = BASE + (spouseIncluded ? SPOUSE : 0);
-
-    const confirmBtn = document.getElementById('confirmBtn');
-    confirmBtn.disabled = true;
-    const originalLabel = confirmBtn.textContent;
-    confirmBtn.textContent = 'Submitting…';
-
-    try{
-      // Apps Script doesn't send CORS headers back for simple deployments,
-      // so we use no-cors: the request still reaches the sheet, we just
-      // can't read the response body. Errors here are network/DNS failures.
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          name: name,
-          mobile: mobile,
-          spouse: spouseIncluded,
-          total: total,
-          utr: utr,
-          screenshotBase64: screenshotDataUrl
-        })
-      });
-
-      document.getElementById('confName').textContent = name;
-      document.getElementById('formCard').style.display = 'none';
-      document.querySelector('#register .section-head').style.display = 'none';
-      document.getElementById('confirmScreen').classList.add('show');
-      window.scrollTo({top: document.getElementById('confirmScreen').offsetTop - 40, behavior:'smooth'});
-    } catch(err){
-      alert('Something went wrong submitting your registration. Please check your internet connection and try again.');
-      confirmBtn.disabled = false;
-      confirmBtn.textContent = originalLabel;
-    }
-  }
-</script>
-
-</body>
-</html>
+  fun
