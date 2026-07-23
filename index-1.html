@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TENTH — A DECADE | ARC Matric Batch 2016–17 Reunion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --ink:#0A0A0C;
+    --panel:#141417;
+    --panel-2:#1B1B1F;
+    --line: rgba(212,175,55,0.18);
+    --gold:#CBA135;
+    --gold-light:#E8D9A0;
+    --ember:#B4432A;
+    --ivory:#F4F0E6;
+    --ivory-dim: rgba(244,240,230,0.62);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--ivory);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--gold); color:#0A0A0C; }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    opacity:0.85;
+  }
+
+  h1,h2,h3{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:0.01em; }
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:32px 20px 60px;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 8%, rgba(203,161,53,0.14), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(180,67,42,0.10), transparent 60%);
+    pointer-events:none;
+  }
+  .hero-logo,
+  .phoenix-mark{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 18px;
+    z-index:1;
+  }
+
+  .hero-logo img,
+  .phoenix-mark img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+      padding: 6px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(203,161,53,0.35);
+      box-shadow: 0 0 18px rgba(203,161,53,0.25);
+      filter: drop-shadow(0 0 12px rgba(203,161,53,0.35));
+  }
+
+  .ember{
+    position:absolute;
+    bottom:-10px;
+    width:3px; height:3px;
+    border-radius:50%;
+    background:var(--gold-light);
+    opacity:0;
+    animation: rise 7s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes rise{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:0.8; }
+    90%{ opacity:0.3; }
+    100%{ transform:translateY(-90vh) translateX(var(--drift,20px)); opacity:0; }
+  }
+
+  .hero-title{
+    font-size: clamp(2.6rem, 9vw, 5rem);
+    line-height:1.02;
+    color:var(--ivory);
+    z-index:1;
+  }
+  .hero-title em{
+    font-style: italic;
+    color:var(--gold-light);
+  }
+  .hero-sub{
+    margin-top:14px;
+    max-width:460px;
+    font-size:15.5px;
+    color:var(--ivory-dim);
+    z-index:1;
+    letter-spacing:0.01em;
+  }
+  .hero-school{
+    margin-top:26px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--gold-light);
+    opacity:0.9;
+    z-index:1;
+  }
+  .hero-school span{ display:block; color:var(--ivory-dim); font-size:11px; margin-top:4px; letter-spacing:0.06em;}
+
+  /* countdown */
+  .countdown{
+    z-index:1;
+    display:flex;
+    gap:10px;
+    margin-top:36px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .cd-unit{
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    min-width:72px;
+    text-align:center;
+    backdrop-filter: blur(6px);
+  }
+  .cd-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:26px;
+    font-weight:500;
+    color:var(--gold-light);
+  }
+  .cd-label{
+    font-size:9.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ivory-dim);
+    margin-top:4px;
+  }
+
+  .hero-cta{
+    z-index:1;
+    margin-top:38px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--gold);
+    color:#151107;
+    font-weight:600;
+    font-size:14.5px;
+    letter-spacing:0.02em;
+    padding:14px 30px;
+    border-radius:100px;
+    text-decoration:none;
+    box-shadow:0 8px 30px rgba(203,161,53,0.25);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .hero-cta:active{ transform:scale(0.97); }
+
+  .venue-strip{
+    z-index:1;
+    margin-top:22px;
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    justify-content:center;
+    font-size:12.5px;
+    color:var(--ivory-dim);
+  }
+  .venue-strip span{ color:var(--gold-light); }
+  .venue-strip a.location-link{
+    color:var(--gold-light);
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  /* ---------------- MAP PREVIEW ---------------- */
+  .map-card{
+    background:linear-gradient(180deg, rgba(27,27,31,0.9), rgba(20,20,23,0.9));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .map-frame-wrap{
+    position:relative;
+    width:100%;
+    padding-top:56%;
+    background:#0F0F12;
+  }
+  .map-frame-wrap iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+    filter:grayscale(0.15) contrast(1.05);
+  }
+  .map-meta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 18px;
+    flex-wrap:wrap;
+  }
+  .map-meta .addr{
+    font-size:13.5px;
+    color:var(--ivory-dim);
+    line-height:1.5;
+  }
+  .map-meta .addr strong{
+    display:block;
+    color:var(--ivory);
+    font-family:'Cormorant Garamond', serif;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:2px;
+  }
+  .map-directions{
+    flex-shrink:0;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(203,161,53,0.14);
+    border:1px solid var(--gold);
+    color:var(--gold-light);
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    padding:10px 16px;
+    border-radius:100px;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:transform .2s ease;
+  }
+  .map-directions:active{ transform:scale(0.96); }
+
+  /* ---------------- SECTION SHARED ---------------- */
+  section{ padding:70px 20px; position:relative; }
+  .section-inner{ max-width:520px; margin:0 auto; }
+  .section-head{ text-align:center; margin-bottom:34px; }
+  .section-head h2{ font-size:clamp(1.8rem,6vw,2.4rem); margin-top:8px; }
+  .section-head p{ color:var(--ivory-dim); font-size:14px; margin-top:8px; }
+
+  .divider{
+    width:1px; height:50px;
+    background:linear-gradient(var(--gold), transparent);
+    margin:0 auto;
+    opacity:0.5;
+  }
+
+  /* ---------------- REGISTRATION ---------------- */
+  .card{
+    background:linear-gradient(180deg, rgba(27,27,31,0.9), rgba(20,20,23,0.9));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px 22px;
+    backdrop-filter: blur(10px);
+  }
+  .field{ margin-bottom:18px; }
+  .field label{
+    display:block;
+    font-size:11.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin-bottom:8px;
+  }
+  .field input[type="text"],
+  .field input[type="tel"]{
+    width:100%;
+    background:#0F0F12;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:13px 14px;
+    color:var(--ivory);
+    font-size:15px;
+    font-family:'Inter',sans-serif;
+    outline:none;
+    transition:border-color .2s ease;
+  }
+  .field input:focus{ border-color:var(--gold); }
+  .field input::placeholder{ color:rgba(244,240,230,0.3); }
+  .field input:disabled{ opacity:0.4; }
+
+  .toggle-row{
+    display:flex;
+    gap:10px;
+  }
+  .toggle-btn{
+    flex:1;
+    text-align:center;
+    padding:13px 10px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:#0F0F12;
+    color:var(--ivory-dim);
+    font-size:14px;
+    font-weight:500;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  .toggle-btn.active{
+    background:rgba(203,161,53,0.14);
+    border-color:var(--gold);
+    color:var(--gold-light);
+  }
+
+  .amount-box{
+    margin-top:6px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    background: linear-gradient(135deg, rgba(203,161,53,0.10), rgba(180,67,42,0.06));
+    padding:18px 20px;
+  }
+  .amount-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:13.5px;
+    color:var(--ivory-dim);
+    padding:5px 0;
+  }
+  .amount-row.total{
+    margin-top:8px;
+    padding-top:12px;
+    border-top:1px dashed var(--line);
+    font-size:16px;
+    color:var(--ivory);
+    font-weight:600;
+  }
+  .amount-row.total .val{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--gold-light);
+    font-size:19px;
+  }
+
+  .qr-wrap{
+    text-align:center;
+    margin-top:16px;
+  }
+  .qr-wrap p{
+    font-size:12px;
+    color:var(--ivory-dim);
+    margin-bottom:10px;
+  }
+  #qrCode{
+    display:inline-block;
+    background:#fff;
+    padding:10px;
+    border-radius:12px;
+  }
+
+  .upload-box{
+    border:1.5px dashed var(--line);
+    border-radius:14px;
+    padding:22px 16px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .2s ease, opacity .2s ease;
+  }
+  .upload-box:hover{ border-color:var(--gold); }
+  .upload-box p{ font-size:13px; color:var(--ivory-dim); margin-top:6px;}
+  .upload-box.has-file{ border-color:var(--gold); }
+  .upload-box.locked{
+    cursor:not-allowed;
+    opacity:0.45;
+  }
+  .upload-box.locked:hover{ border-color:var(--line); }
+  #screenshotPreview{ max-width:100%; border-radius:10px; margin-top:12px; display:none; }
+
+  .pay-btn{
+    width:100%;
+    margin-top:8px;
+    background:var(--gold);
+    color:#151107;
+    border:none;
+    padding:16px;
+    border-radius:12px;
+    font-size:15.5px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    cursor:pointer;
+    transition:transform .2s ease;
+  }
+  .pay-btn:active{ transform:scale(0.98); }
+  .pay-btn:disabled{ opacity:0.4; }
+
+  .confirm-btn{
+    width:100%;
+    margin-top:12px;
+    background:transparent;
+    color:var(--gold-light);
+    border:1px solid var(--line);
+    padding:14px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:500;
+    cursor:pointer;
+  }
+  .confirm-btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .helper-text{ font-size:11.5px; color:var(--ivory-dim); text-align:center; margin-top:12px; line-height:1.5; }
+
+  /* ---------------- CONFIRMATION ---------------- */
+  .confirm-screen{
+    display:none;
+    text-align:center;
+    padding:50px 24px;
+  }
+  .confirm-screen.show{ display:block; }
+  .check-mark{
+    width:64px; height:64px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 22px;
+    font-size:28px;
+    color:var(--gold-light);
+  }
+  .confirm-screen h2{ font-size:2rem; }
+  .confirm-screen .msg{ color:var(--ivory-dim); margin-top:10px; font-size:14.5px; }
+  .confirm-detail{
+    margin-top:26px;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:20px;
+    color:var(--gold-light);
+    line-height:1.6;
+  }
+
+  /* ---------------- FOOTER ---------------- */
+  footer{
+    text-align:center;
+    padding:40px 20px 60px;
+    color:var(--ivory-dim);
+    font-size:12px;
+  }
+  footer .logo-word{ font-family:'Cormorant Garamond', serif; font-size:18px; color:var(--gold-light); margin-bottom:6px; }
+  footer .credit{
+    margin-top:18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    color:rgba(244,240,230,0.35);
+  }
+
+  @media (min-width:600px){
+    .section-inner{ max-width:560px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="emberField"></div>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-logo">
+      <img src="./tenthadecade.jpeg" alt="Tenth-a-Decade Logo">
+  </div>
+
+  <p class="eyebrow">A.R.C. Matriculation Hr. Sec. School</p>
+  <h1 class="hero-title">TENTH<br><em>— A Decade —</em></h1>
+  <p class="hero-sub">A Decade of Memories. A Lifetime of Friendship.</p>
+
+  <div class="hero-school">
+    SSLC BATCH OF 2016–2017
+    <span>Reuniting after ten years</span>
+  </div>
+
+  <div class="countdown" id="countdown">
+    <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Days</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Hrs</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-mins">00</div><div class="cd-label">Min</div></div>
+    <div class="cd-unit"><div class="cd-num" id="cd-secs">00</div><div class="cd-label">Sec</div></div>
+  </div>
+
+  <a href="#register" class="hero-cta">Reserve Your Seat →</a>
+
+  <div class="venue-strip">
+    <div>📅 <span>9 August 2026</span></div>
+    <div>🕝 <span>2:30 PM – 8:00 PM</span></div>
+    <div>
+    📍
+    <a href="https://maps.app.goo.gl/WjRJU4dze1deRGsG7"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="location-link">
+      Nithilam Mahal, Karumathampatti
+    </a>
+  </div>
+  </div>
+</section>
+
+<!-- ================= VENUE / MAP ================= -->
+<section id="venue">
+  <div class="section-inner">
+    <div class="section-head">
+      <p class="eyebrow">Venue</p>
+      <h2>Find Us There</h2>
+      <p>Tap the map for turn-by-turn directions.</p>
+    </div>
+
+    <div class="map-card">
+      <a href="https://maps.app.goo.gl/WjRJU4dze1deRGsG7" target="_blank" rel="noopener noreferrer">
+        <div class="map-frame-wrap">
+          <iframe
+            src="https://www.google.com/maps?q=Nithilam+Mahal,+Karumathampatti,+Coimbatore&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </a>
+      <div class="map-meta">
+        <div class="addr">
+          <strong>Nithilam Mahal</strong>
+          Karumathampatti, Coimbatore
+        </div>
+        <a class="map-directions" href="https://maps.app.goo.gl/WjRJU4dze1deRGsG7" target="_blank" rel="noopener noreferrer">
+          Get Directions →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REGISTRATION ================= -->
+<section id="register">
+  <div class="section-inner">
+    <div class="section-head">
+      <p class="eyebrow">Registration</p>
+      <h2>Confirm Your Presence</h2>
+      <p>Fill in your details — the amount updates automatically.</p>
+    </div>
+
+    <div class="card" id="formCard">
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" id="fullName" placeholder="As you'd like it on the guest list">
+      </div>
+
+      <div class="field">
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10">
+      </div>
+
+      <div class="field">
+        <label>Bringing Your Spouse?</label>
+        <div class="toggle-row">
+          <div class="toggle-btn active" id="spouseNo" onclick="setSpouse(false)">No</div>
+          <div class="toggle-btn" id="spouseYes" onclick="setSpouse(true)">Yes, +1</div>
+        </div>
+      </div>
+
+      <div class="amount-box">
+        <div class="amount-row"><span>Classmate</span><span>₹899</span></div>
+        <div class="amount-row" id="spouseRow" style="display:none;"><span>Spouse</span><span>₹299</span></div>
+        <div class="amount-row total"><span>Total Payable</span><span class="val" id="totalAmt">₹899</span></div>
+      </div>
+
+      <button class="pay-btn" id="payBtn" onclick="payNow()">Pay Now — ₹899</button>
+
+      <div class="qr-wrap">
+        <p>Or scan to pay — updates automatically with your total</p>
+        <div id="qrCode"></div>
+      </div>
+
+      <div class="field" style="margin-top:20px;">
+        <label>Transaction / UPI Reference ID</label>
+        <input type="text" id="utrId" placeholder="12-digit UTR shown after payment" maxlength="30" disabled>
+      </div>
+
+      <div class="field">
+        <label>Payment Screenshot</label>
+        <div class="upload-box locked" id="uploadBox" onclick="handleUploadBoxClick()">
+          <div id="uploadIcon">🔒</div>
+          <p id="uploadText">Complete payment above to unlock upload</p>
+          <img id="screenshotPreview">
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFile(event)">
+      </div>
+
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmRegistration()" disabled>Confirm Registration</button>
+
+      <p class="helper-text">Tapping "Pay Now" (or scanning the QR) opens your UPI app with the exact amount and note pre-filled. Complete the payment, then enter your UTR/reference ID, upload the screenshot, and confirm. <strong>Note: this page cannot automatically verify your payment</strong> — the organizers will cross-check your screenshot and reference ID manually before the event.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONFIRMATION ================= -->
+<section>
+  <div class="confirm-screen" id="confirmScreen">
+    <div class="check-mark">✓</div>
+    <h2>Registration Successful</h2>
+    <p class="msg">Thank you, <span id="confName">Friend</span>. Your spot is reserved pending payment verification.</p>
+    <div class="confirm-detail">
+      See you on 9 August 2026<br>at<br>Nithilam Mahal ❤️
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo-word">TENTH — A DECADE</div>
+  Batch of 2016–2017 · A.R.C. Matriculation Hr. Sec. School
+  <div class="credit">Designed by Sathiesh Kathirvel</div>
+</footer>
+
+<script>
+  /* ---------- Embers ---------- */
+  function spawnEmbers(){
+    const hero = document.querySelector('.hero');
+    for(let i=0;i<18;i++){
+      const e = document.createElement('div');
+      e.className='ember';
+      e.style.left = Math.random()*100+'%';
+      e.style.animationDelay = (Math.random()*7)+'s';
+      e.style.setProperty('--drift', (Math.random()*40-20)+'px');
+      hero.appendChild(e);
+    }
+  }
+  spawnEmbers();
+
+  /* ---------- Countdown ---------- */
+  const eventDate = new Date('2026-08-09T14:30:00+05:30').getTime();
+  function updateCountdown(){
+    const now = new Date().getTime();
+    const dist = eventDate - now;
+    if(dist < 0){
+      document.getElementById('countdown').innerHTML = '<p style="color:var(--gold-light);font-family:Cormorant Garamond,serif;font-size:20px;">The day has arrived ✨</p>';
+      return;
+    }
+    const d = Math.floor(dist/(1000*60*60*24));
+    const h = Math.floor((dist%(1000*60*60*24))/(1000*60*60));
+    const m = Math.floor((dist%(1000*60*60))/(1000*60));
+    const s = Math.floor((dist%(1000*60))/1000);
+    document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* ---------- Amount Logic ---------- */
+  let spouseIncluded = false;
+  const BASE = 899, SPOUSE = 299;
+
+  function setSpouse(val){
+    spouseIncluded = val;
+    document.getElementById('spouseYes').classList.toggle('active', val);
+    document.getElementById('spouseNo').classList.toggle('active', !val);
+    document.getElementById('spouseRow').style.display = val ? 'flex' : 'none';
+    const total = BASE + (val ? SPOUSE : 0);
+    document.getElementById('totalAmt').textContent = '₹'+total;
+    document.getElementById('payBtn').textContent = 'Pay Now — ₹'+total;
+    generateQR(total);
+  }
+
+  function generateQR(amount){
+    const note = encodeURIComponent("TENTH A DECADE");
+    const payeeName = encodeURIComponent(PAYEE_NAME);
+    const upiLink = `upi://pay?pa=${UPI_ID}&pn=${payeeName}&am=${amount.toFixed(2)}&cu=INR&tn=${note}`;
+    const qrBox = document.getElementById('qrCode');
+    qrBox.innerHTML = '';
+    new QRCode(qrBox, {
+      text: upiLink,
+      width: 180,
+      height: 180,
+      colorDark: "#000000",
+      colorLight: "#ffffff"
+    });
+  }
+
+  /* ---------- UPI Payment ---------- */
+  const UPI_ID = "sathieshkathirvel@oksbi";
+  const PAYEE_NAME = "TENTHADECADE";
+
+  // Google Apps Script Web App URL that saves registrations to the Sheet.
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwi-TI6xLNuJ3Sn9A6_Z1d3ymnQA5BFe5lSwvxssVaKon2wfahWb1aRT_-dx2NTRDVY/exec';
+
+  let paymentInitiated = false;
+  let fileUploaded = false;
+  let screenshotDataUrl = "";
+
+  function payNow(){
+    const name = document.getElementById('fullName').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    if(!name || mobile.length < 10){
+      alert('Please enter your full name and a valid 10-digit mobile number first.');
+      return;
+    }
+    const total = BASE + (spouseIncluded ? SPOUSE : 0);
+    const note = encodeURIComponent("TENTH A DECADE");
+    const payeeName = encodeURIComponent(PAYEE_NAME);
+    const txnRef = "TAD" + Date.now();
+    const upiLink = `upi://pay?pa=${UPI_ID}&pn=${payeeName}&am=${total.toFixed(2)}&cu=INR&tn=${note}&tr=${txnRef}`;
+    window.location.href = upiLink;
+    unlockAfterPayment();
+  }
+
+  function unlockAfterPayment(){
+    paymentInitiated = true;
+    document.getElementById('utrId').disabled = false;
+    const box = document.getElementById('uploadBox');
+    box.classList.remove('locked');
+    document.getElementById('uploadIcon').textContent = '📤';
+    document.getElementById('uploadText').textContent = 'Tap to upload your payment screenshot';
+  }
+
+  function handleUploadBoxClick(){
+    if(!paymentInitiated){
+      alert('Please complete the payment (or scan the QR) first — this unlocks the upload option.');
+      return;
+    }
+    document.getElementById('fileInput').click();
+  }
+
+  /* ---------- Screenshot Upload ---------- */
+  function handleFile(evt){
+    const file = evt.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+      screenshotDataUrl = e.target.result;
+      const preview = document.getElementById('screenshotPreview');
+      preview.src = screenshotDataUrl;
+      preview.style.display = 'block';
+      document.getElementById('uploadIcon').textContent = '✅';
+      document.getElementById('uploadText').textContent = 'Screenshot attached — tap to change';
+      document.getElementById('uploadBox').classList.add('has-file');
+      fileUploaded = true;
+      document.getElementById('confirmBtn').disabled = false;
+    }
+    reader.readAsDataURL(file);
+  }
+
+  /* ---------- Confirm & Save to Google Sheet ---------- */
+  function confirmRegistration(){
+    const name = document.getElementById('fullName').value.trim() || 'Friend';
+    const mobile = document.getElementById('mobile').value.trim();
+    const utr = document.getElementById('utrId').value.trim();
+    const total = BASE + (spouseIncluded ? SPOUSE : 0);
+
+    const payload = {
+      name: name,
+      phone: mobile,
+      spouse: spouseIncluded,
+      amount: total,
+      utr: utr,
+      screenshot: screenshotDataUrl
+    };
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }).catch(function(err){
+      console.log('Save error (registration still shown as complete):', err);
+    });
+
+    document.getElementById('confName').textContent = name;
+    document.getElementById('formCard').style.display = 'none';
+    document.querySelector('#register .section-head').style.display = 'none';
+    document.getElementById('confirmScreen').classList.add('show');
+    window.scrollTo({top: document.getElementById('confirmScreen').offsetTop - 40, behavior:'smooth'});
+  }
+
+  /* ---------- Init ---------- */
+  generateQR(BASE);
+</script>
+
+</body>
+</html>
