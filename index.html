@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
     --ink:#0A0A0C;
@@ -372,11 +371,23 @@
     color:var(--ivory-dim);
     margin-bottom:10px;
   }
-  #qrCode{
+  .qr-box{
     display:inline-block;
     background:#fff;
     padding:10px;
     border-radius:12px;
+    line-height:0;
+  }
+  .qr-box img{
+    width:180px;
+    height:180px;
+    display:block;
+  }
+  .qr-amt{
+    margin-top:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--gold-light);
   }
 
   .upload-box{
@@ -592,7 +603,10 @@
 
       <div class="qr-wrap">
         <p>Or scan to pay — updates automatically with your total</p>
-        <div id="qrCode"></div>
+        <div class="qr-box">
+          <img id="qrImg" src="" alt="UPI QR Code">
+        </div>
+        <div class="qr-amt" id="qrAmt">Amount: ₹899</div>
       </div>
 
       <div class="field" style="margin-top:20px;">
@@ -638,9 +652,9 @@
 <script>
   /* ---------- Embers ---------- */
   function spawnEmbers(){
-    const hero = document.querySelector('.hero');
-    for(let i=0;i<18;i++){
-      const e = document.createElement('div');
+    var hero = document.querySelector('.hero');
+    for(var i=0;i<18;i++){
+      var e = document.createElement('div');
       e.className='ember';
       e.style.left = Math.random()*100+'%';
       e.style.animationDelay = (Math.random()*7)+'s';
@@ -651,18 +665,18 @@
   spawnEmbers();
 
   /* ---------- Countdown ---------- */
-  const eventDate = new Date('2026-08-09T14:30:00+05:30').getTime();
+  var eventDate = new Date('2026-08-09T14:30:00+05:30').getTime();
   function updateCountdown(){
-    const now = new Date().getTime();
-    const dist = eventDate - now;
+    var now = new Date().getTime();
+    var dist = eventDate - now;
     if(dist < 0){
       document.getElementById('countdown').innerHTML = '<p style="color:var(--gold-light);font-family:Cormorant Garamond,serif;font-size:20px;">The day has arrived ✨</p>';
       return;
     }
-    const d = Math.floor(dist/(1000*60*60*24));
-    const h = Math.floor((dist%(1000*60*60*24))/(1000*60*60));
-    const m = Math.floor((dist%(1000*60*60))/(1000*60));
-    const s = Math.floor((dist%(1000*60))/1000);
+    var d = Math.floor(dist/(1000*60*60*24));
+    var h = Math.floor((dist%(1000*60*60*24))/(1000*60*60));
+    var m = Math.floor((dist%(1000*60*60))/(1000*60));
+    var s = Math.floor((dist%(1000*60))/1000);
     document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
     document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
     document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
@@ -671,19 +685,13 @@
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
+  /* ---------- UPI settings ---------- */
+  var UPI_ID = "sathieshkathirvel@oksbi";
+  var PAYEE_NAME = "TENTHADECADE";
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwi-TI6xLNuJ3Sn9A6_Z1d3ymnQA5BFe5lSwvxssVaKon2wfahWb1aRT_-dx2NTRDVY/exec';
+
   /* ---------- Amount Logic ---------- */
-  let spouseIncluded = false;
-  const BASE = 899, SPOUSE = 299;
+  var spouseIncluded = false;
+  var BASE = 899, SPOUSE = 299;
 
-  function setSpouse(val){
-    spouseIncluded = val;
-    document.getElementById('spouseYes').classList.toggle('active', val);
-    document.getElementById('spouseNo').classList.toggle('active', !val);
-    document.getElementById('spouseRow').style.display = val ? 'flex' : 'none';
-    const total = BASE + (val ? SPOUSE : 0);
-    document.getElementById('totalAmt').textContent = '₹'+total;
-    document.getElementById('payBtn').textContent = 'Pay Now — ₹'+total;
-    generateQR(total);
-  }
-
-  fun
+  function 
