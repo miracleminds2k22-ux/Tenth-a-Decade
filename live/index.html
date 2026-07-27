@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team | TENTH — A DECADE</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="shell">
+  <a href="index.html" class="back-link">← Back to Leaderboard</a>
+
+  <div class="team-hero" id="teamHero">
+    <div style="font-size:12px;letter-spacing:0.15em;color:var(--text-faint);font-weight:700;" id="rankTag">— </div>
+    <div class="tname-big" id="tname">—</div>
+    <div class="tpoints-big" id="tpoints">0</div>
+    <div class="tpoints-label">Points</div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="label">Captain</div>
+      <div class="body-text" id="captain">—</div>
+    </div>
+    <div class="info-box">
+      <div class="label">Games Won</div>
+      <div class="body-text" id="gamesWon">0</div>
+    </div>
+    <div class="info-box">
+      <div class="label">Games Played</div>
+      <div class="body-text" id="gamesPlayed">0</div>
+    </div>
+  </div>
+
+  <div class="info-box mt">
+    <div class="label">Team Chant</div>
+    <div class="body-text" id="chant">Not set yet</div>
+  </div>
+
+  <div class="info-box mt">
+    <div class="label">Members</div>
+    <div class="members-list" id="members"></div>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="app.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const teamKey = params.get('team') || 'red';
+  const meta = TEAM_META[teamKey] || TEAM_META.red;
+
+  document.documentElement.style.setProperty('--team-color', meta.color);
+  document.getElementById('teamHero').style.setProperty('--team-color', meta.color);
+  document.getElementById('teamHero').style.setProperty('--team-glow', meta.color + '33');
+
+  db.ref('teams/' + teamKey).on('value', snap => {
+    const t = snap.val();
+    if (!t) return;
+    document.getElementById('tname').textContent = t.name;
+    document.getElementById('tpoints').textContent = t.points || 0;
+    document.getElementById('captain').textContent = t.captain || 'Not assigned';
+    document.getElementById('gamesWon').textContent = t.gamesWon || 0;
+    document.getElementById('gamesPlayed').textContent = t.gamesPlayed || 0;
+    document.getElementById('chant').textContent = t.chant || 'Not set yet';
+
+    const membersEl = document.getElementById('members');
+    membersEl.innerHTML = '';
+    const members = t.members || [];
+    if (members.length === 0) {
+      membersEl.innerHTML = '<span class="body-text" style="color:var(--text-faint)">No members added yet</span>';
+    } else {
+      members.forEach(m => {
+        const chip = document.createElement('span');
+        chip.className = 'member-chip' + (m === t.captain ? ' captain' : '');
+        chip.textContent = m;
+        membersEl.appendChild(chip);
+      });
+    }
+  });
+
+  // Rank tag
+  db.ref('teams').on('value', snap => {
+    const teams = snap.val();
+    if (!teams) return;
+    const sorted = TEAM_ORDER.map(k => ({ k, points: teams[k].points || 0 })).sort((a,b) => b.points - a.points);
+    const idx = sorted.findIndex(t => t.k === teamKey);
+    document.getElementById('rankTag').textContent = rankLabel(idx) + ' PLACE';
+  });
+</script>
+</body>
+</html>
